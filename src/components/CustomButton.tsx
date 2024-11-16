@@ -8,10 +8,12 @@ function CustomButton({
   variant = "contained",
   color = "info",
   fullWidth = false,
+  type = "button",
 }: ICustomButton) {
   return (
     <Button
       variant={variant}
+      type={type}
       color={color}
       onClick={handleClick}
       startIcon={icon}

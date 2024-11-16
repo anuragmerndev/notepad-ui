@@ -4,10 +4,10 @@ import { IListItem } from "../types/components";
 import { IconsData } from "../data/IconsData";
 import { CenterContainer } from "./styledComp";
 
-function CustomListItem({
+function ListItem({
   icon,
   label,
-  key,
+  id,
   active,
   handleClick,
   isButton = false,
@@ -20,13 +20,13 @@ function CustomListItem({
         handleClick({
           icon,
           label,
-          key,
+          id,
         })
       }
     >
       <Grid2
         container
-        key={key}
+        key={id}
         spacing={2}
         sx={{
           padding: "0.3rem 0.2rem",
@@ -76,4 +76,4 @@ function CustomListItem({
   );
 }
 
-export default CustomListItem;
+export default ListItem;

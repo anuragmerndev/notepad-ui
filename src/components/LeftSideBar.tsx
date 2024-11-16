@@ -3,10 +3,12 @@ import { mainSideBarData } from "../data/SidebarData";
 import CustomListItem from "./CustomListItem";
 import { useEffect, useState } from "react";
 import { ISideBarData } from "../types/components";
-import { tagListData } from "../data/DynamicData";
+import { useTagStore } from "../store/tagStore";
+import { IconsData } from "../data/IconsData";
 
 function LeftSideBar() {
   const [activeList, setActiveList] = useState<ISideBarData | null>(null);
+  const tags = useTagStore((state) => state.tags);
 
   const theme = useTheme();
 
@@ -53,8 +55,13 @@ function LeftSideBar() {
         <Typography align="left" ml={2}>
           Tags
         </Typography>
-        {tagListData.map((tagData) => (
-          <CustomListItem {...tagData} handleClick={handleChangeActiveList} />
+        {tags.map((tagData) => (
+          <CustomListItem
+            key={tagData.id}
+            {...tagData}
+            icon={<IconsData.tag />}
+            handleClick={handleChangeActiveList}
+          />
         ))}
       </Box>
     </Grid2>

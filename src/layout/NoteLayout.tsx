@@ -1,22 +1,76 @@
 import { Grid2, useTheme } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import { IconsData } from "../data/IconsData";
-import { notesData, notesDetailedData } from "../data/DynamicData";
 import NotesCard from "../components/NotesCard";
-import { useEffect, useState } from "react";
-import { INotesCard } from "../types/components";
+import { useState } from "react";
+import {
+  INotesData,
+  INotesDetail,
+  TButtonActionType,
+} from "../types/components";
 import NoteDetail from "../components/NoteDetail";
+import CustomModal from "../components/CustomModal";
+import CreateNoteForm from "../forms/CreateNoteForm";
+import { useNoteStore } from "../store/noteStore";
+import RightSideBar from "../components/RightSideBar";
 
 function NoteLayout() {
-  const [activeNote, setActiveNote] = useState<INotesCard>();
+  const [activeNote, setActiveNote] = useState<INotesDetail | null>(null);
+  const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
 
+  const {
+    notes: notesList,
+    createNote,
+    archiveNote,
+    deleteNote,
+  } = useNoteStore((state) => state);
   const theme = useTheme();
 
-  const handleCreateNote = () => {};
+  const handleCreateNote = () => {
+    setOpenCreateModal(true);
+  };
 
-  useEffect(() => {
-    setActiveNote(notesData[0]);
-  }, []);
+  const handleCloseCreateNote = () => {
+    setOpenCreateModal(false);
+  };
+
+  const handleActiveNote = (id: string) => {
+    const selectedNote = notesList.find((notes) => notes.id === id);
+    setActiveNote(selectedNote ? selectedNote : null);
+  };
+
+  const handleSubmitData = (value: INotesData) => {
+    createNote({
+      id: new Date().getTime().toString(),
+      body: value.body,
+      title: value.title,
+      tags: value.tags,
+      created_date: new Date().toLocaleString(),
+      isArchived: false,
+    });
+    setOpenCreateModal(false);
+  };
+
+  const handleCancel = () => {
+    setOpenCreateModal(false);
+  };
+
+  const handleExtraClick = (type: TButtonActionType) => {
+    switch (type) {
+      case "archive":
+        archiveNote(activeNote?.id!);
+        setActiveNote(null);
+        break;
+
+      case "delete":
+        deleteNote(activeNote?.id!);
+        setActiveNote(null);
+        break;
+
+      default:
+        break;
+    }
+  };
 
   return (
     <Grid2 container height={"100%"}>
@@ -49,14 +103,46 @@ function NoteLayout() {
             padding: "0 1rem",
           }}
         >
-          {notesData.map((noteData) => (
-            <NotesCard {...noteData} active={activeNote?.id === noteData.id} />
-          ))}
+          {notesList
+            .filter((note) => !note.isArchived)
+            .map((noteData) => (
+              <NotesCard
+                key={noteData.id}
+                {...noteData}
+                handleClick={handleActiveNote}
+                active={activeNote?.id === noteData.id}
+              />
+            ))}
         </Grid2>
       </Grid2>
-      <Grid2 size={{ md: 9 }}>
-        <NoteDetail {...notesDetailedData} />
-      </Grid2>
+      {activeNote ? (
+        <>
+          <Grid2 size={{ md: 7 }}>
+            <NoteDetail {...activeNote} />
+          </Grid2>
+          <Grid2
+            size={{ md: 2 }}
+            sx={{
+              borderLeft: "1px solid",
+              borderColor: theme.palette.secondary.dark,
+            }}
+          >
+            <RightSideBar handleClick={handleExtraClick} />
+          </Grid2>
+        </>
+      ) : (
+        <></>
+      )}
+      <CustomModal
+        title="Create New Note"
+        open={openCreateModal}
+        handleClose={handleCloseCreateNote}
+      >
+        <CreateNoteForm
+          handleSubmit={handleSubmitData}
+          handleCancel={handleCancel}
+        />
+      </CustomModal>
     </Grid2>
   );
 }

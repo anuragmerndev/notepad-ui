@@ -2,11 +2,10 @@ import { Box, Grid2, Typography, useTheme } from "@mui/material";
 import { INotesDetail } from "../types/components";
 import { IconsData } from "../data/IconsData";
 
-function NoteDetail({ id, tags, body, created_date, title }: INotesDetail) {
+function NoteDetail({ tags, body, created_date, title }: INotesDetail) {
   const theme = useTheme();
   return (
     <Grid2
-      key={id}
       sx={{
         textAlign: "left",
         padding: "1rem",
@@ -52,17 +51,15 @@ function NoteDetail({ id, tags, body, created_date, title }: INotesDetail) {
             </Grid2>
             <Grid2 container>
               {tags.map((tagData, index) => (
-                <>
-                  <Typography
-                    key={tagData.id}
-                    sx={{
-                      mr: 0.5,
-                    }}
-                  >
-                    {tagData.label}
-                    {index !== tags.length - 1 ? `,` : ""}
-                  </Typography>
-                </>
+                <Typography
+                  key={tagData.id}
+                  sx={{
+                    mr: 0.5,
+                  }}
+                >
+                  {tagData.label}
+                  {index !== tags.length - 1 ? `,` : ""}
+                </Typography>
               ))}
             </Grid2>
           </Grid2>

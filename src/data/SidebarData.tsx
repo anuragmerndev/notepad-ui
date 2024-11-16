@@ -16,9 +16,11 @@ export const rightSideBarData: ISideBarData[] = [
   {
     icon: <IconsData.archive />,
     label: "Archive Note",
+    type: "archive",
   },
   {
     icon: <IconsData.delete />,
     label: "Delete Note",
+    type: "delete",
   },
 ];

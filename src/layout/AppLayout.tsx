@@ -2,7 +2,6 @@ import { ReactNode } from "react";
 import theme from "../theme";
 import { CssBaseline, Grid2, ThemeProvider } from "@mui/material";
 import LeftSideBar from "../components/LeftSideBar";
-import RightSideBar from "../components/RightSideBar";
 import Header from "../components/Header";
 
 function AppLayout({ children }: { children: ReactNode }) {
@@ -44,18 +43,10 @@ function AppLayout({ children }: { children: ReactNode }) {
           </Grid2>
           <Grid2
             size={{
-              md: 9,
+              md: 12,
             }}
           >
             {children}
-          </Grid2>
-          <Grid2
-            size={{ md: 3 }}
-            sx={{
-              height: "100%",
-            }}
-          >
-            <RightSideBar />
           </Grid2>
         </Grid2>
       </Grid2>

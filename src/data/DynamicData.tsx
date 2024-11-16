@@ -96,42 +96,42 @@ export const notesData: INotesCard[] = [
 
 export const tagListData: ISideBarData[] = [
   {
-    key: 1,
+    id: 1,
     label: "Dev",
     icon: <IconsData.tag />,
   },
   {
-    key: 2,
+    id: 2,
     label: "Design",
     icon: <IconsData.tag />,
   },
   {
-    key: 3,
+    id: 3,
     label: "Frontend",
     icon: <IconsData.tag />,
   },
   {
-    key: 4,
+    id: 4,
     label: "Backend",
     icon: <IconsData.tag />,
   },
   {
-    key: 5,
+    id: 5,
     label: "API",
     icon: <IconsData.tag />,
   },
   {
-    key: 6,
+    id: 6,
     label: "Database",
     icon: <IconsData.tag />,
   },
   {
-    key: 7,
+    id: 7,
     label: "Testing",
     icon: <IconsData.tag />,
   },
   {
-    key: 8,
+    id: 8,
     label: "Deployment",
     icon: <IconsData.tag />,
   },
@@ -139,15 +139,15 @@ export const tagListData: ISideBarData[] = [
 
 export const notesDetailedData: INotesDetail = {
   body: "hello this is a new task",
-  id: 1,
+  id: "1",
   title: "React Performance Optimization",
   tags: [
     {
-      id: 1,
+      id: "1",
       label: "Dev",
     },
     {
-      id: 2,
+      id: "2",
       label: "React",
     },
   ],

@@ -1,16 +1,16 @@
 import { Grid2 } from "@mui/material";
 import { rightSideBarData } from "../data/SidebarData";
 import CustomListItem from "./CustomListItem";
+import { TButtonActionType } from "../types/components";
 
-function RightSideBar() {
-  const handleClick = () => {
-    console.log("called");
-  };
-
+function RightSideBar({
+  handleClick,
+}: {
+  handleClick: (type: TButtonActionType) => void;
+}) {
   return (
     <Grid2
       sx={{
-        borderLeft: "1px solid #e1e2e9",
         height: "100%",
       }}
     >
@@ -18,7 +18,7 @@ function RightSideBar() {
         <CustomListItem
           {...sideData}
           key={sideData.label + index}
-          handleClick={handleClick}
+          handleClick={() => handleClick(sideData.type!)}
           isButton
         />
       ))}

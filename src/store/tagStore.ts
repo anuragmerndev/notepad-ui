@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { ITagData } from '../types/components';
 
 type TTagState = {
@@ -11,38 +12,42 @@ type TTagAction = {
     deleteTag: (id: ITagData["id"]) => void;
 }
 
-const useTagStore = create<TTagState & TTagAction>((set) => ({
-    tags: [
-        {
-            id: "1",
-            label: "Dev",
+const useTagStore = create<TTagState & TTagAction>()(
+    persist((set) => ({
+        tags: [
+            {
+                id: "1",
+                label: "Dev",
+            },
+            {
+                id: "2",
+                label: "Design",
+            },
+            {
+                id: "3",
+                label: "Frontend",
+            }],
+        createTag: (data: ITagData) => {
+            set((state) => ({
+                ...state,
+                tags: [...state.tags, data]
+            }))
         },
-        {
-            id: "2",
-            label: "Design",
+        updateTag: (id, data) => {
+            set((state) => ({
+                ...state,
+                tags: state.tags.map((tagData) => tagData.id === id ? data : tagData)
+            }))
         },
-        {
-            id: "3",
-            label: "Frontend",
-        }],
-    createTag: (data: ITagData) => {
-        set((state) => ({
-            ...state,
-            tags: [...state.tags, data]
-        }))
-    },
-    updateTag: (id, data) => {
-        set((state) => ({
-            ...state,
-            tags: state.tags.map((tagData) => tagData.id === id ? data : tagData)
-        }))
-    },
-    deleteTag: (id) => {
-        set((state) => ({
-            ...state,
-            tags: state.tags.filter((tagData) => tagData.id === id)
-        }))
-    }
-}))
+        deleteTag: (id) => {
+            set((state) => ({
+                ...state,
+                tags: state.tags.filter((tagData) => tagData.id === id)
+            }))
+        }
+    }), {
+        name: "tag-store",
+        storage: createJSONStorage(() => localStorage)
+    }))
 
 export { useTagStore }

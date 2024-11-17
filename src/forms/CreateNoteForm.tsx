@@ -116,7 +116,7 @@ function CreateNoteForm({
                           .includes(inputValue.toLowerCase())
                       );
 
-                      if (inputValue !== "" && !isExisting) {
+                      if (inputValue.trim() !== "" && !isExisting) {
                         handleCreateTags(inputValue);
                       }
                       return filtered;

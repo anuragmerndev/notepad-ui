@@ -59,6 +59,7 @@ function LeftSideBar() {
           <CustomListItem
             key={tagData.id}
             {...tagData}
+            active={tagData.label === activeList?.label}
             icon={<IconsData.tag />}
             handleClick={handleChangeActiveList}
           />

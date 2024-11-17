@@ -30,8 +30,9 @@ function CreateNoteForm({
     createTag({
       id: new Date().getTime().toString(),
       label: value,
+      listType: "tag",
     });
-  }, 500);
+  }, 1000);
 
   return (
     <>
@@ -42,14 +43,16 @@ function CreateNoteForm({
           tags: [],
         }}
         validationSchema={yup.object({
-          title: yup.string(),
-          body: yup.string(),
-          tags: yup.array(
-            yup.object({
-              id: yup.string(),
-              label: yup.string(),
-            })
-          ),
+          title: yup.string().required(),
+          body: yup.string().required(),
+          tags: yup
+            .array(
+              yup.object({
+                id: yup.string(),
+                label: yup.string(),
+              })
+            )
+            .min(1),
         })}
         onSubmit={handleSubmit}
       >
@@ -158,6 +161,7 @@ function CreateNoteForm({
                 </Grid2>
                 <Grid2>
                   <CustomButton
+                    disabled={!props.isValid || !props.dirty}
                     type="submit"
                     text="Create Note"
                     color="primary"

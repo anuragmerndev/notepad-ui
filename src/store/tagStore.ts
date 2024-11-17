@@ -18,19 +18,22 @@ const useTagStore = create<TTagState & TTagAction>()(
             {
                 id: "1",
                 label: "Dev",
+                listType: "tag"
             },
             {
                 id: "2",
                 label: "Design",
+                listType: "tag"
             },
             {
                 id: "3",
                 label: "Frontend",
+                listType: "tag"
             }],
         createTag: (data: ITagData) => {
             set((state) => ({
                 ...state,
-                tags: [...state.tags, data]
+                tags: [...state.tags, { ...data, listType: "tag" }]
             }))
         },
         updateTag: (id, data) => {
@@ -42,7 +45,7 @@ const useTagStore = create<TTagState & TTagAction>()(
         deleteTag: (id) => {
             set((state) => ({
                 ...state,
-                tags: state.tags.filter((tagData) => tagData.id === id)
+                tags: state.tags.filter((tagData) => tagData.id !== id)
             }))
         }
     }), {

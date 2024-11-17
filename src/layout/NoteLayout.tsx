@@ -2,21 +2,20 @@ import { Grid2, useTheme } from "@mui/material";
 import CustomButton from "../components/CustomButton";
 import { IconsData } from "../data/IconsData";
 import NotesCard from "../components/NotesCard";
-import { useState } from "react";
-import {
-  INotesData,
-  INotesDetail,
-  TButtonActionType,
-} from "../types/components";
+import { useEffect, useState } from "react";
+import { INoteData, INotesData, TButtonActionType } from "../types/components";
 import NoteDetail from "../components/NoteDetail";
 import CustomModal from "../components/CustomModal";
 import CreateNoteForm from "../forms/CreateNoteForm";
 import { useNoteStore } from "../store/noteStore";
 import RightSideBar from "../components/RightSideBar";
+import { TSideBarState, useSideBarStore } from "../store/sideBarStore";
+import { useActiveNoteStore } from "../store/activeNoteStore";
 
 function NoteLayout() {
-  const [activeNote, setActiveNote] = useState<INotesDetail | null>(null);
   const [openCreateModal, setOpenCreateModal] = useState<boolean>(false);
+  const [filteredNotes, setFilteredNotes] = useState<INoteData[] | null>(null);
+  const [callUpdateFilter, setCallUpdateFilter] = useState<boolean>(false);
 
   const {
     notes: notesList,
@@ -24,6 +23,11 @@ function NoteLayout() {
     archiveNote,
     deleteNote,
   } = useNoteStore((state) => state);
+  const activeSideBar = useSideBarStore((state) => state.activeSideBar);
+  const { activeNote, setActiveNote, setInactiveNote } = useActiveNoteStore(
+    (state) => state
+  );
+
   const theme = useTheme();
 
   const handleCreateNote = () => {
@@ -35,8 +39,17 @@ function NoteLayout() {
   };
 
   const handleActiveNote = (id: string) => {
+    if (activeNote?.id === id) {
+      setInactiveNote();
+      return;
+    }
+
     const selectedNote = notesList.find((notes) => notes.id === id);
-    setActiveNote(selectedNote ? selectedNote : null);
+    if (selectedNote) {
+      setActiveNote(selectedNote);
+    } else {
+      setInactiveNote();
+    }
   };
 
   const handleSubmitData = (value: INotesData) => {
@@ -49,6 +62,7 @@ function NoteLayout() {
       isArchived: false,
     });
     setOpenCreateModal(false);
+    setCallUpdateFilter((prev) => !prev);
   };
 
   const handleCancel = () => {
@@ -59,14 +73,51 @@ function NoteLayout() {
     switch (type) {
       case "archive":
         archiveNote(activeNote?.id!);
-        setActiveNote(null);
+        setInactiveNote();
+        setCallUpdateFilter((prev) => !prev);
         break;
 
       case "delete":
         deleteNote(activeNote?.id!);
-        setActiveNote(null);
+        setInactiveNote();
+        setCallUpdateFilter((prev) => !prev);
         break;
 
+      default:
+        break;
+    }
+  };
+
+  const updateFilterData = (activeSide: TSideBarState["activeSideBar"]) => {
+    handleFilteredNotes(activeSide);
+    setInactiveNote();
+  };
+
+  useEffect(() => {
+    updateFilterData(activeSideBar);
+  }, [activeSideBar, callUpdateFilter]);
+
+  const handleFilteredNotes = (activeList: TSideBarState["activeSideBar"]) => {
+    switch (activeList.type) {
+      case "all":
+        const unArchivedNotes = notesList.filter((note) => !note.isArchived);
+        setFilteredNotes(unArchivedNotes);
+        break;
+
+      case "archive":
+        const archivedNotes = notesList.filter((note) => note.isArchived);
+        setFilteredNotes(archivedNotes);
+        break;
+
+      case "tag":
+        const filterNotesByTag = notesList.filter(
+          (note) =>
+            note.tags
+              .map((noteTags) => noteTags.label)
+              .includes(activeList.label) && !note.isArchived
+        );
+        setFilteredNotes(filterNotesByTag);
+        break;
       default:
         break;
     }
@@ -103,9 +154,8 @@ function NoteLayout() {
             padding: "0 1rem",
           }}
         >
-          {notesList
-            .filter((note) => !note.isArchived)
-            .map((noteData) => (
+          {filteredNotes &&
+            filteredNotes.map((noteData) => (
               <NotesCard
                 key={noteData.id}
                 {...noteData}

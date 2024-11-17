@@ -1,23 +1,22 @@
 import { Box, Grid2, Typography, useTheme } from "@mui/material";
 import { mainSideBarData } from "../data/SidebarData";
 import CustomListItem from "./CustomListItem";
-import { useEffect, useState } from "react";
 import { ISideBarData } from "../types/components";
 import { useTagStore } from "../store/tagStore";
 import { IconsData } from "../data/IconsData";
+import { useSideBarStore } from "../store/sideBarStore";
 
 function LeftSideBar() {
-  const [activeList, setActiveList] = useState<ISideBarData | null>(null);
   const tags = useTagStore((state) => state.tags);
+  const { activeSideBar, setActiveSideBar } = useSideBarStore((state) => state);
 
   const theme = useTheme();
 
-  useEffect(() => {
-    setActiveList(mainSideBarData[0]);
-  }, []);
-
   const handleChangeActiveList = (data: ISideBarData) => {
-    setActiveList(data);
+    setActiveSideBar({
+      label: data.label,
+      type: data.listType,
+    });
   };
 
   return (
@@ -39,7 +38,7 @@ function LeftSideBar() {
           <CustomListItem
             {...sideData}
             key={sideData.label + index}
-            active={sideData.label === activeList?.label}
+            active={sideData.label === activeSideBar.label}
             handleClick={handleChangeActiveList}
           />
         ))}
@@ -59,9 +58,10 @@ function LeftSideBar() {
           <CustomListItem
             key={tagData.id}
             {...tagData}
-            active={tagData.label === activeList?.label}
+            active={tagData.label === activeSideBar.label}
             icon={<IconsData.tag />}
             handleClick={handleChangeActiveList}
+            canDelete
           />
         ))}
       </Box>

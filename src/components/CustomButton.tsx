@@ -9,6 +9,7 @@ function CustomButton({
   color = "info",
   fullWidth = false,
   type = "button",
+  disabled,
 }: ICustomButton) {
   return (
     <Button
@@ -18,6 +19,7 @@ function CustomButton({
       onClick={handleClick}
       startIcon={icon}
       fullWidth={fullWidth}
+      disabled={disabled}
     >
       {text}
     </Button>

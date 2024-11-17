@@ -1,10 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { INotesDetail } from '../types/components';
-
-interface INoteData extends INotesDetail {
-    isArchived: boolean;
-}
+import { INoteData } from '../types/components';
 
 type TNoteActions = {
     createNote: (data: INoteData) => void;
@@ -44,7 +40,7 @@ const useNoteStore = create<TNoteState & TNoteActions>()(
                     ...state,
                     notes: state.notes.map(note => note.id === id ? { ...note, isArchived: !note.isArchived } : note)
                 }))
-            }
+            },
         }), {
         name: "note-store",
         storage: createJSONStorage(() => localStorage)

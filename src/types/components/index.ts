@@ -8,6 +8,8 @@ export interface IListItem {
     label: string,
     isButton?: boolean,
     handleClick: (data: ISideBarData) => void;
+    listType: TSideBarListType;
+    canDelete?: boolean;
 }
 
 export interface ISideBarData extends Omit<IListItem, "handleClick"> {
@@ -15,6 +17,7 @@ export interface ISideBarData extends Omit<IListItem, "handleClick"> {
 }
 
 export type TButtonActionType = "archive" | "delete"
+export type TSideBarListType = "all" | "archive" | "tag" | "button";
 
 export interface ICustomButton {
     text: string;
@@ -24,6 +27,7 @@ export interface ICustomButton {
     color?: "info" | "inherit" | "primary" | "secondary" | "success" | "error" | "warning";
     fullWidth?: boolean;
     type?: "button" | "submit"
+    disabled?: boolean
 }
 
 export interface ISearchBox {
@@ -49,10 +53,16 @@ export interface INotesData extends FormikValues {
 export interface ITagData {
     id: string;
     label: string;
+    listType: TSideBarListType;
 }
 
 export interface INotesDetail extends INotesCard {
     body: string;
+    isArchived: boolean;
+}
+
+export interface INoteData extends INotesDetail {
+    isArchived: boolean;
 }
 
 export interface IModalData {
